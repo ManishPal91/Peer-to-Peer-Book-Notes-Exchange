@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="flex justify-between items-center mb-4">
+    <h1 style="margin:0;">Dashboard</h1>
+    <a href="{% url 'listing_create' %}" class="btn btn-primary">
+        <svg style="width:16px; height:16px; margin-right:6px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+        New Listing
+    </a>
+</div>
+<p class="text-muted mb-4">Manage your active listings and wishlist requests.</p>
+
+<div class="card-grid" style="grid-template-columns: 1fr 1fr;">
+    <!-- My Listings Section -->
+    <div class="card">
+        <div class="card-header">
+            <h3 style="margin:0; font-size:1.125rem;">My Listings</h3>
+            <p class="text-muted" style="margin:0; font-size:0.875rem;">Items you've posted for exchange</p>
+        </div>
+        
+        {% if my_listings %}
+        <div style="display:flex; flex-direction:column; gap:1rem;">
+            {% for listing in my_listings %}
+            <div style="border: 1px solid var(--geist-accents-2); border-radius: var(--radius-md); padding: 1rem; display: flex; justify-content: space-between; align-items: center; transition: var(--transition-fast);">
+                <div>
+                    <a href="{% url 'listing_detail' listing.pk %}" style="font-weight:600; font-size:1rem; color:var(--geist-foreground); display:block; margin-bottom:0.25rem;">{{ listing.title }}</a>
+                    <div class="flex items-center gap-2">
+                        <span class="badge" style="background:var(--geist-accents-2); border:none;">{{ listing.item_type }}</span>
+                        <span class="text-muted" style="font-size:0.875rem;">Status: <span style="font-weight:500; color:var(--geist-foreground);">{{ listing.status }}</span></span>
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <a href="{% url 'listing_update' listing.pk %}" class="btn btn-secondary" style="height:32px; padding:0 0.75rem;">Edit</a>
+                    <a href="{% url 'listing_delete' listing.pk %}" class="btn btn-danger" style="height:32px; padding:0 0.75rem;">Delete</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div style="padding: 2rem 0; text-align: center;">
+            <svg style="width:48px; height:48px; color:var(--geist-accents-3); margin:0 auto 1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+            <p class="text-muted" style="margin:0;">You haven't listed any items yet.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- My Wishlist Section -->
+    <div class="card">
+        <div class="card-header">
+            <h3 style="margin:0; font-size:1.125rem;">My Wishlist</h3>
+            <p class="text-muted" style="margin:0; font-size:0.875rem;">Items you've requested to swap</p>
+        </div>
+        
+        {% if my_wishlist %}
+        <div style="display:flex; flex-direction:column; gap:1rem;">
+            {% for want in my_wishlist %}
+            <div style="border: 1px solid var(--geist-accents-2); border-radius: var(--radius-md); padding: 1rem; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <a href="{% url 'listing_detail' want.listing.pk %}" style="font-weight:600; font-size:1rem; color:var(--geist-foreground); display:block; margin-bottom:0.25rem;">{{ want.listing.title }}</a>
+                    <span class="text-muted" style="font-size:0.875rem;">Owner: <span style="font-weight:500; color:var(--geist-foreground);">{{ want.listing.owner.username }}</span></span>
+                </div>
+                <a href="{% url 'remove_from_wishlist' want.listing.pk %}" class="btn btn-secondary" style="height:32px; padding:0 0.75rem; color:var(--geist-error);">Remove</a>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div style="padding: 2rem 0; text-align: center;">
+            <svg style="width:48px; height:48px; color:var(--geist-accents-3); margin:0 auto 1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+            <p class="text-muted" style="margin:0;">Your wishlist is empty. <a href="{% url 'listing_list' %}" style="text-decoration:underline;">Browse items</a>.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

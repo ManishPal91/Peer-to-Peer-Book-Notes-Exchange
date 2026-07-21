@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card" style="max-width: 800px; margin: 0 auto; padding: 2rem;">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem;">
+        <div>
+            <h1 style="margin-bottom: 0.25rem;">{{ listing.title }}</h1>
+            <p class="text-muted" style="font-size: 1rem;">by {{ listing.author_creator }}</p>
+        </div>
+        <span class="badge badge-success">{{ listing.item_type }}</span>
+    </div>
+
+    <div class="card-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; padding: 1.5rem; background-color: var(--geist-accents-1); border-radius: var(--radius-md);">
+        <div>
+            <h3 class="text-muted" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">Subject/Course</h3>
+            <p style="font-weight: 500; font-size: 0.875rem; margin: 0;">{{ listing.subject_course }}</p>
+        </div>
+        <div>
+            <h3 class="text-muted" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">Condition</h3>
+            <p style="font-weight: 500; font-size: 0.875rem; margin: 0;">{{ listing.condition }}</p>
+        </div>
+        <div>
+            <h3 class="text-muted" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">Owner</h3>
+            <p style="font-weight: 500; font-size: 0.875rem; margin: 0;">{{ listing.owner.username }} {% if listing.owner.major %}({{ listing.owner.major }}){% endif %}</p>
+        </div>
+        <div>
+            <h3 class="text-muted" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">Status</h3>
+            <p style="font-weight: 500; font-size: 0.875rem; margin: 0;">{{ listing.status }}</p>
+        </div>
+    </div>
+
+    <div style="margin-bottom: 2.5rem;">
+        <h3 style="font-size: 1rem; margin-bottom: 0.75rem; border-bottom: 1px solid var(--geist-accents-2); padding-bottom: 0.5rem;">Description</h3>
+        <p style="white-space: pre-wrap; line-height: 1.8; color: var(--geist-accents-6);">{{ listing.description|default:"No description provided." }}</p>
+    </div>
+
+    <div class="flex items-center gap-4" style="border-top: 1px solid var(--geist-accents-2); padding-top: 1.5rem;">
+        <a href="{% url 'listing_list' %}" class="btn btn-secondary">
+            <svg style="width:16px; height:16px; margin-right:4px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            Back to Browse
+        </a>
+        
+        {% if user.is_authenticated and listing.owner != user %}
+            {% if not in_wishlist %}
+            <a href="{% url 'add_to_wishlist' listing.pk %}" class="btn btn-primary" style="margin-left: auto;">
+                <svg style="width:16px; height:16px; margin-right:6px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                Add to Wishlist & Request Swap
+            </a>
+            {% else %}
+            <a href="{% url 'remove_from_wishlist' listing.pk %}" class="btn btn-danger" style="margin-left: auto;">
+                Remove from Wishlist
+            </a>
+            {% endif %}
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card" style="max-width: 700px; margin: 2rem auto;">
+    <div class="card-header">
+        <h2 style="margin: 0;">Schedule Pickup</h2>
+        <p class="text-muted" style="margin: 0; font-size: 0.875rem;">Propose or confirm a pickup time for your match.</p>
+    </div>
+    
+    <div style="background-color: var(--geist-accents-1); padding: 1.25rem; border: 1px solid var(--geist-accents-2); border-radius: var(--radius-md); margin-bottom: 2rem;">
+        <h3 style="font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--geist-accents-5); margin-bottom: 0.5rem;">Match Details</h3>
+        <p style="margin-bottom: 0.25rem; font-weight: 500;">Swap involves: <span style="color: var(--geist-success);">{{ match.user1.username }}, {{ match.user2.username }}{% if match.is_circular %}, {{ match.user3.username }}{% endif %}</span></p>
+        <p style="margin: 0; font-weight: 500;">Status: <span class="badge badge-info">{{ match.status }}</span></p>
+    </div>
+
+    {% if schedule %}
+        <div style="margin-bottom: 2.5rem; padding: 1.5rem; border: 1px solid {% if schedule.status == 'Accepted' %}var(--geist-success){% else %}var(--geist-warning){% endif %}; border-radius: var(--radius-md); background-color: {% if schedule.status == 'Accepted' %}rgba(0,112,243,0.03){% else %}rgba(245,166,35,0.03){% endif %};">
+            <h3 style="font-size: 1.125rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                <svg style="width: 20px; height: 20px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                Proposed Schedule
+            </h3>
+            
+            <div style="display: flex; gap: 2rem; margin-bottom: 1rem;">
+                <div>
+                    <span class="text-muted" style="font-size: 0.875rem; display: block; margin-bottom: 0.25rem;">Time</span>
+                    <span style="font-weight: 600; font-size: 1rem;">{{ schedule.proposed_time }}</span>
+                </div>
+                <div>
+                    <span class="text-muted" style="font-size: 0.875rem; display: block; margin-bottom: 0.25rem;">Status</span>
+                    <span class="badge {% if schedule.status == 'Accepted' %}badge-success{% else %}badge-warning{% endif %}">{{ schedule.status }}</span>
+                </div>
+            </div>
+            
+            {% if schedule.status == 'Proposed' %}
+            <form method="post" style="border-top: 1px solid rgba(0,0,0,0.05); padding-top: 1rem; margin-top: 1rem;">
+                {% csrf_token %}
+                <p style="font-size: 0.875rem; font-weight: 500; margin-bottom: 1rem;">Do you accept this proposed time?</p>
+                <button type="submit" name="accept" value="accept" class="btn btn-primary" style="background-color: var(--geist-success); border-color: var(--geist-success);">Accept Time</button>
+            </form>
+            {% endif %}
+        </div>
+        
+        <h3 style="font-size: 1.125rem; margin-bottom: 1rem; border-bottom: 1px solid var(--geist-accents-2); padding-bottom: 0.5rem;">Propose a New Time</h3>
+    {% else %}
+        <p class="text-muted" style="margin-bottom: 1.5rem;">No pickup time has been scheduled yet. Propose a time below.</p>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2rem;">
+            {{ form.as_p }}
+        </div>
+        <div class="flex items-center gap-4 border-top: 1px solid var(--geist-accents-2); padding-top: 1.5rem;" style="border-top: 1px solid var(--geist-accents-2); padding-top: 1.5rem;">
+            <a href="{% url 'match_center' %}" class="btn btn-secondary">Back to Matches</a>
+            <button type="submit" class="btn btn-primary" style="margin-left: auto;">Propose Time</button>
+        </div>
+    </form>
+</div>
+
+<style>
+    /* Premium SaaS Form Styling for Django's as_p */
+    form p {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 1rem;
+        position: relative;
+    }
+    form label {
+        font-weight: 500;
+        font-size: 0.875rem;
+        color: var(--geist-accents-6);
+        margin-bottom: 0.5rem;
+    }
+    form input[type="text"],
+    form input[type="datetime-local"],
+    form input[type="number"],
+    form select,
+    form textarea {
+        width: 100%;
+        height: 40px;
+        padding: 0 0.75rem;
+        border: 1px solid var(--geist-accents-2);
+        border-radius: var(--radius-sm);
+        background-color: var(--geist-surface);
+        color: var(--geist-foreground);
+        font-family: inherit;
+        font-size: 0.875rem;
+        transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    }
+    form input:focus,
+    form select:focus,
+    form textarea:focus {
+        outline: none;
+        border-color: var(--geist-success);
+        box-shadow: var(--shadow-glow);
+    }
+    form .helptext {
+        font-size: 0.75rem;
+        color: var(--geist-accents-4);
+        margin-top: 0.25rem;
+    }
+    form .errorlist {
+        color: var(--geist-error);
+        font-size: 0.75rem;
+        list-style: none;
+        padding: 0;
+        margin-bottom: 0.5rem;
+    }
+</style>
+{% endblock %}

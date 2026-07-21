@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="flex justify-between items-center mb-4">
+    <h1 style="margin:0;">Match Center</h1>
+</div>
+<p class="text-muted mb-4">Manage your book and note swaps here. Once a match is confirmed, schedule a pickup.</p>
+
+<div style="margin-bottom: 3rem;">
+    <h2 style="font-size: 1.25rem; border-bottom: 1px solid var(--geist-accents-2); padding-bottom: 0.75rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+        <svg style="width: 20px; height: 20px; color: var(--geist-success);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+        Active Swaps
+    </h2>
+    {% if active_matches %}
+    <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+        {% for match in active_matches %}
+        {% include "exchange/includes/match_card.html" %}
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="card" style="text-align: center; padding: 3rem 1.5rem;">
+        <svg style="width: 48px; height: 48px; color: var(--geist-accents-3); margin: 0 auto 1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
+        <p class="text-muted" style="margin:0;">You don't have any active swap matches right now.</p>
+    </div>
+    {% endif %}
+</div>
+
+<div>
+    <h2 style="font-size: 1.25rem; border-bottom: 1px solid var(--geist-accents-2); padding-bottom: 0.75rem; margin-bottom: 1.5rem;">Swap History</h2>
+    {% if past_matches %}
+    <div style="display: flex; flex-direction: column; gap: 1.5rem; opacity: 0.85;">
+        {% for match in past_matches %}
+        {% include "exchange/includes/match_card.html" %}
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="card" style="text-align: center; padding: 2rem 1.5rem; background-color: var(--geist-accents-1);">
+        <p class="text-muted" style="margin:0;">No completed or cancelled swaps yet.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
